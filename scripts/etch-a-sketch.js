@@ -8,25 +8,17 @@ function create_square(num) {
     container.innerHTML = "";//стирает все элементы внутри 
     //<div class="container"></div>
 
-    const divHeight = 958 / num;
-    const divWidth = 100 / num;
-
-    let number;
-
-    if (num === 1) {
-        number = num + 1;
-    } else {
-        number = num ** 2;
-    }
-
-
-    div.style.width = `${divWidth}%`;
-    div.style.height = `${divHeight}px`;
+    const number = num ** 2; // здесь показали, сколько квадратов рисовать
+    const divHeight = 960 / num;//высота квадрата
+    const divWidth = 100 / num;//ширина квадрата
 
     for (let i = 0; i < number; i++) {
-        const div = document.createElement("div");
-        div.classList.add("background");
-        container.appendChild(div);
+        const div = document.createElement("div");//создали квадрат
+        div.classList.add("containers");//добавили стили
+        div.style.width = `${divWidth}%`;//добавили ширину для квадрата
+        div.style.height = `${divHeight}px`;//добавили высоту для квадрата
+
+        container.appendChild(div); //добавили на страницу
     }
 }
 
@@ -43,4 +35,30 @@ btn.addEventListener("click", () => {
     if (isNaN(input) || input <= 0) return;
 
     create_square(input);
-}); 
+
+});
+
+container.addEventListener("mouseover", event => {
+    const div = event.target.closest(".containers");
+    if (!div) return;
+    const r = Math.floor(Math.random() * 256);
+    const g = Math.floor(Math.random() * 256);
+    const b = Math.floor(Math.random() * 256);
+
+    div.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+
+    let currentOpacity = Number(div.style.opacity);
+    if (isNaN(currentOpacity)) {
+        currentOpacity = 0;
+    }
+
+    if (currentOpacity < 1) {
+        div.style.opacity = currentOpacity + 0.1; //мы физически записали
+        //значение в HTML, теперь в памяти браузера это выглядит так:  
+        //<div class="containers" style=opacity: 0.1;"></div>
+        //после того, как пользователь еще раз навел мышку на квадрат, 
+        //содержимое переменной currentOpacity стерлось, далее currentOpacity
+        //запрашивает свойство div.style.opacity, браузер выдает текущее
+        //значение в opacity
+    }
+});
